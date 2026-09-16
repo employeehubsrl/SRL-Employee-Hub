@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Employee Portal</title>
   <style>
     * {
@@ -13,28 +13,30 @@
     html, body {
       width: 100%;
       height: 100%;
-      overflow: auto;
+      overflow: hidden; /* Scrollbar glitch fix */
       background-color: #0f172a;
       font-family: Arial, sans-serif;
     }
+    .portal-container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
     iframe {
       width: 100%;
-      min-height: 100vh;
       height: 100%;
       border: none;
       display: block;
-      transform-origin: 0 0;
-      transition: transform 0.2s ease;
     }
 
-    /* Floating Zoom Buttons */
+    /* Clean Floating Zoom Controls */
     .zoom-container {
       position: fixed;
       bottom: 20px;
       right: 20px;
       z-index: 9999;
       display: flex;
-      gap: 8px;
+      gap: 6px;
       background: rgba(15, 23, 42, 0.9);
       padding: 6px 10px;
       border-radius: 25px;
@@ -45,10 +47,10 @@
       background: #2563eb;
       color: #ffffff;
       border: none;
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       display: flex;
@@ -69,41 +71,49 @@
 </head>
 <body>
 
-  <!-- Zoom Controls -->
   <div class="zoom-container">
     <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
     <button class="zoom-btn reset-btn" onclick="resetZoom()" title="Reset">100%</button>
     <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
   </div>
 
-  <iframe id="portalFrame" src="https://script.google.com/macros/s/AKfycbzfm_KOI7vnAsNK5oetBjSlg9Df3wTYxyh6szG2U55XpF7MFIjTyB0LTndkUNpIdBOU/exec"></iframe>
+  <div class="portal-container" id="portalWrapper">
+    <iframe id="portalFrame" src="https://script.google.com/macros/s/AKfycbzfm_KOI7vnAsNK5oetBjSlg9Df3wTYxyh6szG2U55XpF7MFIjTyB0LTndkUNpIdBOU/exec"></iframe>
+  </div>
 
   <script>
-    let scale = 1;
-    const iframe = document.getElementById('portalFrame');
+    let currentZoom = 1;
+    const wrapper = document.getElementById('portalWrapper');
 
     function applyZoom() {
-      iframe.style.transform = `scale(${scale})`;
-      iframe.style.width = `${100 / scale}%`;
-      iframe.style.height = `${100 / scale}vh`;
+      // Direct CSS Zoom property to prevent scale overflow bugs
+      if ('zoom' in wrapper.style) {
+        wrapper.style.zoom = currentZoom;
+      } else {
+        // Fallback for non-supported browsers
+        wrapper.style.transform = `scale(${currentZoom})`;
+        wrapper.style.transformOrigin = 'top left';
+        wrapper.style.width = `${100 / currentZoom}%`;
+        wrapper.style.height = `${100 / currentZoom}%`;
+      }
     }
 
     function zoomIn() {
-      if (scale < 1.3) {
-        scale += 0.05;
+      if (currentZoom < 1.25) {
+        currentZoom += 0.05;
         applyZoom();
       }
     }
 
     function zoomOut() {
-      if (scale > 0.6) {
-        scale -= 0.05;
+      if (currentZoom > 0.75) {
+        currentZoom -= 0.05;
         applyZoom();
       }
     }
 
     function resetZoom() {
-      scale = 1;
+      currentZoom = 1;
       applyZoom();
     }
   </script>
