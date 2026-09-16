@@ -15,6 +15,55 @@
       height: 100%;
       overflow: auto;
       background-color: #0f172a;
+      font-family: sans-serif;
+    }
+
+    /* Floating Zoom Controls Bar */
+    .zoom-controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 8px 12px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+    }
+    .zoom-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .zoom-btn:hover {
+      background: #1d4ed8;
+      transform: scale(1.05);
+    }
+    .reset-btn {
+      width: auto;
+      padding: 0 12px;
+      border-radius: 18px;
+      font-size: 13px;
+    }
+
+    /* Iframe Styling */
+    .iframe-wrapper {
+      width: 100%;
+      height: 100vh;
+      overflow: auto;
     }
     iframe {
       width: 100%;
@@ -22,12 +71,54 @@
       height: 100%;
       border: none;
       display: block;
+      transform-origin: top center;
+      transition: transform 0.2s ease-in-out;
     }
   </style>
 </head>
 <body>
 
-  <iframe src="https://script.google.com/macros/s/AKfycbzfm_KOI7vnAsNK5oetBjSlg9Df3wTYxyh6szG2U55XpF7MFIjTyB0LTndkUNpIdBOU/exec"></iframe>
+  <!-- Floating Controls -->
+  <div class="zoom-controls">
+    <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
+    <button class="zoom-btn reset-btn" onclick="resetZoom()" title="Reset">100%</button>
+    <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+  </div>
+
+  <!-- Apps Script Frame -->
+  <div class="iframe-wrapper">
+    <iframe id="portalFrame" src="https://script.google.com/macros/s/AKfycbzfm_KOI7vnAsNK5oetBjSlg9Df3wTYxyh6szG2U55XpF7MFIjTyB0LTndkUNpIdBOU/exec"></iframe>
+  </div>
+
+  <script>
+    let currentScale = 1;
+    const iframe = document.getElementById('portalFrame');
+
+    function updateZoom() {
+      iframe.style.transform = `scale(${currentScale})`;
+      // Scale badhne par width adjust karna taaki cut na ho
+      iframe.style.width = `${100 / currentScale}%`;
+    }
+
+    function zoomIn() {
+      if (currentScale < 1.4) { // Max Zoom 140%
+        currentScale += 0.1;
+        updateZoom();
+      }
+    }
+
+    function zoomOut() {
+      if (currentScale > 0.7) { // Min Zoom 70%
+        currentScale -= 0.1;
+        updateZoom();
+      }
+    }
+
+    function resetZoom() {
+      currentScale = 1;
+      updateZoom();
+    }
+  </script>
 
 </body>
 </html>
