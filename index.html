@@ -13,7 +13,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      overflow: hidden; /* Scrollbar glitch fix */
+      overflow: hidden;
       background-color: #0f172a;
       font-family: Arial, sans-serif;
     }
@@ -29,10 +29,10 @@
       display: block;
     }
 
-    /* Clean Floating Zoom Controls */
+    /* Updated Position: Bottom se 60px upar */
     .zoom-container {
       position: fixed;
-      bottom: 20px;
+      bottom: 60px;
       right: 20px;
       z-index: 9999;
       display: flex;
@@ -86,11 +86,9 @@
     const wrapper = document.getElementById('portalWrapper');
 
     function applyZoom() {
-      // Direct CSS Zoom property to prevent scale overflow bugs
       if ('zoom' in wrapper.style) {
         wrapper.style.zoom = currentZoom;
       } else {
-        // Fallback for non-supported browsers
         wrapper.style.transform = `scale(${currentZoom})`;
         wrapper.style.transformOrigin = 'top left';
         wrapper.style.width = `${100 / currentZoom}%`;
