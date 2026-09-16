@@ -83,7 +83,7 @@
 
   <div class="zoom-container">
     <button class="zoom-btn" onclick="zoomIn()" title="Zoom In">+</button>
-    <button class="zoom-btn reset-btn" onclick="resetZoom()" title="Reset">100%</button>
+    <button class="zoom-btn reset-btn" id="zoomLabel" onclick="resetZoom()" title="Reset">100%</button>
     <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
   </div>
 
@@ -94,25 +94,30 @@
   <script>
     let currentZoom = 1;
     const frame = document.getElementById('portalFrame');
+    const zoomLabel = document.getElementById('zoomLabel');
 
     function applyZoom() {
-      // Direct transform scaling for iOS Safari & Android compatibility
+      // Scale and calculate proper frame bounds
       frame.style.transform = `scale(${currentZoom})`;
       frame.style.webkitTransform = `scale(${currentZoom})`;
       frame.style.width = `${100 / currentZoom}%`;
       frame.style.height = `${100 / currentZoom}%`;
+
+      // Display current zoom percentage
+      zoomLabel.innerText = `${Math.round(currentZoom * 100)}%`;
     }
 
     function zoomIn() {
-      if (currentZoom < 1.25) {
-        currentZoom += 0.05;
+      if (currentZoom < 1.30) {
+        currentZoom += 0.10;
         applyZoom();
       }
     }
 
     function zoomOut() {
-      if (currentZoom > 0.75) {
-        currentZoom -= 0.05;
+      // Allow zoom out up to 50% (0.50)
+      if (currentZoom > 0.50) {
+        currentZoom -= 0.10;
         applyZoom();
       }
     }
