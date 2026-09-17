@@ -21,7 +21,8 @@
     .portal-container {
       width: 100%;
       height: 100%;
-      overflow: hidden;
+      overflow: auto; /* Allows smooth touch & scrolling */
+      -webkit-overflow-scrolling: touch;
       position: relative;
     }
     iframe {
@@ -29,10 +30,7 @@
       height: 100%;
       border: none;
       display: block;
-      -webkit-backface-visibility: hidden;
-      transform-origin: 0 0;
-      -webkit-transform-origin: 0 0;
-      transition: transform 0.15s ease-out;
+      touch-action: manipulation;
     }
 
     /* Floating Zoom Controls */
@@ -87,21 +85,29 @@
     <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out">−</button>
   </div>
 
-  <div class="portal-container">
+  <div class="portal-container" id="portalContainer">
     <iframe id="portalFrame" src="https://script.google.com/macros/s/AKfycbzfm_KOI7vnAsNK5oetBjSlg9Df3wTYxyh6szG2U55XpF7MFIjTyB0LTndkUNpIdBOU/exec"></iframe>
   </div>
 
   <script>
     let currentZoom = 1;
     const frame = document.getElementById('portalFrame');
+    const container = document.getElementById('portalContainer');
     const zoomLabel = document.getElementById('zoomLabel');
 
     function applyZoom() {
-      // Scale and calculate proper frame bounds
-      frame.style.transform = `scale(${currentZoom})`;
-      frame.style.webkitTransform = `scale(${currentZoom})`;
-      frame.style.width = `${100 / currentZoom}%`;
-      frame.style.height = `${100 / currentZoom}%`;
+      // Direct CSS zoom property keeps click coordinates 100% aligned
+      if ('zoom' in frame.style) {
+        frame.style.zoom = currentZoom;
+        frame.style.width = '100%';
+        frame.style.height = '100%';
+      } else {
+        // Fallback for browsers that don't support standard zoom
+        frame.style.transform = `scale(${currentZoom})`;
+        frame.style.transformOrigin = '0 0';
+        frame.style.width = `${100 / currentZoom}%`;
+        frame.style.height = `${100 / currentZoom}%`;
+      }
 
       // Display current zoom percentage
       zoomLabel.innerText = `${Math.round(currentZoom * 100)}%`;
@@ -115,7 +121,6 @@
     }
 
     function zoomOut() {
-      // Allow zoom out up to 50% (0.50)
       if (currentZoom > 0.50) {
         currentZoom -= 0.10;
         applyZoom();
