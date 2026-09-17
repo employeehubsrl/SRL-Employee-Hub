@@ -21,8 +21,7 @@
     .portal-container {
       width: 100%;
       height: 100%;
-      overflow: auto; /* Allows smooth touch & scrolling */
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
       position: relative;
     }
     iframe {
@@ -30,13 +29,12 @@
       height: 100%;
       border: none;
       display: block;
-      touch-action: manipulation;
     }
 
     /* Floating Zoom Controls */
     .zoom-container {
       position: fixed;
-      bottom: 60px;
+      bottom: 20px;
       right: 20px;
       z-index: 999999;
       display: flex;
@@ -92,24 +90,22 @@
   <script>
     let currentZoom = 1;
     const frame = document.getElementById('portalFrame');
-    const container = document.getElementById('portalContainer');
     const zoomLabel = document.getElementById('zoomLabel');
 
     function applyZoom() {
-      // Direct CSS zoom property keeps click coordinates 100% aligned
-      if ('zoom' in frame.style) {
-        frame.style.zoom = currentZoom;
-        frame.style.width = '100%';
-        frame.style.height = '100%';
-      } else {
-        // Fallback for browsers that don't support standard zoom
-        frame.style.transform = `scale(${currentZoom})`;
-        frame.style.transformOrigin = '0 0';
-        frame.style.width = `${100 / currentZoom}%`;
-        frame.style.height = `${100 / currentZoom}%`;
+      // Send message to IFrame App to scale inner content gracefully
+      try {
+        frame.contentWindow.postMessage({ type: 'SET_ZOOM', zoom: currentZoom }, '*');
+      } catch (e) {
+        console.log(e);
       }
 
-      // Display current zoom percentage
+      // Fallback scale adjustments
+      frame.style.width = `${100 / currentZoom}%`;
+      frame.style.height = `${100 / currentZoom}%`;
+      frame.style.transform = `scale(${currentZoom})`;
+      frame.style.transformOrigin = '0 0';
+
       zoomLabel.innerText = `${Math.round(currentZoom * 100)}%`;
     }
 
