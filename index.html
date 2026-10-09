@@ -4,9 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <!-- SECURITY POLICY FOR FRAME PROTECTION -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://script.google.com https://script.googleusercontent.com 'unsafe-inline' 'unsafe-eval'; frame-src https://script.google.com https://script.googleusercontent.com;">
-  <title>Employee Portal</title>
+  
+  <!-- ENHANCED CONTENT SECURITY POLICY FOR GOOGLE APPS SCRIPT & ICONS -->
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self' https://script.google.com https://script.googleusercontent.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com 'unsafe-inline' 'unsafe-eval'; 
+                 frame-src https://script.google.com https://script.googleusercontent.com; 
+                 img-src 'self' data: https:;">
+
+  <title>Employee Self Service Portal | Shivalik Rasayan Limited</title>
+
   <style>
     * {
       margin: 0;
@@ -38,7 +44,7 @@
 <body>
 
   <div class="portal-container">
-    <!-- SECURE IFRAME WITH SANDBOX & NO-REFERRER PROTECTION -->
+    <!-- SECURE IFRAME WITH SANDBOX & REFERRER PROTECTION -->
     <iframe 
       id="portalFrame" 
       src="https://script.google.com/macros/s/AKfycbwVANFNKKQmtB7bVaA5rotDdjpjKH5lJsbHaOnS_FZfExlu64NdGulbpIvGSRbl9QLgbA/exec"
